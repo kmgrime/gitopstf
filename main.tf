@@ -48,3 +48,17 @@ resource "azurerm_linux_function_app" "main" {
 
   site_config {}
 }
+
+resource "azurerm_application_insights" "main" {
+  name                = "${local.prefix}-appinsights"
+  resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
+  application_type    = "web"
+}
+
+resource "azurerm_linux_function_app" "main" {
+
+  app_settings = {
+    AppInsights_InstrumentationKey = azurerm_application_insights.main.instrumentation_key
+  }
+}
